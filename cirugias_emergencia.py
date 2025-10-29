@@ -55,3 +55,63 @@ class quirofano:
         while nodo.parent and nodo.data < nodo.parent.data:
             nodo.data, nodo.parent.data = nodo.parent.data, nodo.data
             nodo = nodo.parent
+    
+    def consultar_siguiente(self):
+        if self.root is not None:
+            return self.root.data
+        else:
+            return None
+        
+    def programar_cirugia(self):
+        if self.root is None:
+            return None
+        
+        paciente_siguiente = self.root.data
+
+        if self.root.leftchild is None and self.root.rightchild is None:
+            self.root = None
+            return paciente_siguiente
+        
+        q = Queue()
+        q.enqueu(self.root)
+        ultimo = None
+        padre_ultimo = None
+
+        while not q.is_empty():
+            actual = q.enqueue()
+            if actual.leftchild:
+                padre_ultimo = actual
+                q.enqueue(actual.leftchild)
+            if actual.rightchild:
+                padre_ultimo = actual
+                q.enqueue(actual.rightchild)
+            ultimo = actual
+        
+        self.root.data = ultimo.data
+
+        if padre_ultimo.rightchild == ultimo:
+            padre_ultimo.rightchild = None
+        else:
+            padre_ultimo.leftchild = None
+        
+        self.heap_down(self.root)
+
+        print(f"{paciente_siguiente.nombre} sera llevado a cirugia")
+        return paciente_siguiente
+    
+
+    def heap_down(self, nodo):
+        if nodo is None:
+            return
+
+        menor = nodo 
+
+        if nodo.leftchild and nodo.leftchild.data < menor.data:
+            menor = nodo.leftchild
+
+        if nodo.rightchild and nodo.rightchild.data < menor.data:
+            menor = nodo.rightchild
+
+        if menor != nodo:
+            nodo.data, menor.data = menor.data, nodo.data
+            self.heap_down(menor)
