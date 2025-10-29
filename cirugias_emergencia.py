@@ -18,3 +18,40 @@ class paciente:
     
     def __str__(self):
         return  f"{self.nombre} [PRIORIDAD: {self.nivel_emergencia} - LLEGADA: {self.orden_llegada}]"
+
+class quirofano:
+
+    def __init__(self):
+        self.root = None
+    
+    def registrar_paciente(self, paciente):
+        nuevo_nodo = BinaryTreeNode(paciente)
+
+        if self.root is None:
+            self.root == nuevo_nodo
+            return
+        
+        q = Queue()
+        q.enqueue(self.root)
+
+        while not q.is_empty():
+            actual = q.dequeue()
+
+            if actual.leftchild is None:
+                actual.leftchild = nuevo_nodo
+                nuevo_nodo.parent = actual
+                break
+            elif actual.rightchild is None:
+                actual.rightchild = nuevo_nodo
+                nuevo_nodo.parent = actual
+                break
+            else:
+                q.enqueue(actual.leftchild)
+                q.enqueue(actual.rightchild)
+        
+        self.heap_up(nuevo_nodo)
+    
+    def heap_up(self, nodo):
+        while nodo.parent and nodo.data < nodo.parent.data:
+            nodo.data, nodo.parent.data = nodo.parent.data, nodo.data
+            nodo = nodo.parent
