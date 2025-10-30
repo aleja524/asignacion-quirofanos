@@ -28,7 +28,7 @@ class quirofano:
         nuevo_nodo = BinaryTreeNode(paciente)
 
         if self.root is None:
-            self.root == nuevo_nodo
+            self.root = nuevo_nodo
             return
         
         q = Queue()
@@ -73,12 +73,12 @@ class quirofano:
             return paciente_siguiente
         
         q = Queue()
-        q.enqueu(self.root)
+        q.enqueue(self.root)
         ultimo = None
         padre_ultimo = None
 
         while not q.is_empty():
-            actual = q.enqueue()
+            actual = q.dequeue()
             if actual.leftchild:
                 padre_ultimo = actual
                 q.enqueue(actual.leftchild)
@@ -134,3 +134,59 @@ class quirofano:
                 q.enqueue(nodo.leftchild)
             if nodo.rightchild:
                 q.enqueue(nodo.rightchild)
+    
+    def ver_pacientes_prioridad(self, nivel_emergencia):
+        if self.root is None:
+            print("No hay pacientes en espera.")
+            return
+
+        q = Queue()
+        q.enqueue(self.root)
+        encontrados = 0
+
+        while not q.is_empty():
+            nodo = q.dequeue()
+            p = nodo.data
+
+            if p.nivel_emergencia == nivel_emergencia:
+                print(p)
+                encontrados += 1
+
+            if nodo.leftchild:
+                q.enqueue(nodo.leftchild)
+            if nodo.rightchild:
+                q.enqueue(nodo.rightchild)
+
+        if encontrados == 0:
+            print("No se encontraron pacientes con este nivel de emergencia.\n")
+        else:
+            print(f"Total encontrados: {encontrados}\n")
+
+if __name__ == "__main__":
+    hospital = quirofano()
+
+    hospital.registrar_paciente(paciente(1, "Ana", 3))
+    hospital.registrar_paciente(paciente(2, "Luis", 1))
+    hospital.registrar_paciente(paciente(3, "Marta", 4))
+    hospital.registrar_paciente(paciente(4, "Carlos", 1))
+    hospital.registrar_paciente(paciente(5, "Andres", 2))
+
+    print("\n=== ÁRBOL DE PACIENTES (Heap Interno) ===")
+    printTree(hospital.root)
+
+    print(f"\nSIGUIENTE A QUIRÓFANO: {hospital.consultar_siguiente()}")
+
+    print("\n=== PROGRAMAR CIRUGÍA ===")
+    atendido = hospital.programar_cirugia()
+    print(f"Se atendió a: {atendido}")
+
+    print("\n=== NUEVO ÁRBOL DE PACIENTES ===")
+    printTree(hospital.root)
+
+    print(f"\nSIGUIENTE A QUIRÓFANO: {hospital.consultar_siguiente()}")
+
+    print("\n=== LISTA GENERAL DE PACIENTES ===")
+    hospital.ver_lista_pacientes()
+
+    print("\n=== PACIENTES DE NIVEL DE EMERGENCIA 1 ===")
+    hospital.ver_pacientes_prioridad(1)
