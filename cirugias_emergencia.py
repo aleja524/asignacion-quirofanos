@@ -115,3 +115,22 @@ class quirofano:
         if menor != nodo:
             nodo.data, menor.data = menor.data, nodo.data
             self.heap_down(menor)
+
+    
+    def ver_lista_pacientes(self):
+        if self.root is None:
+            print("No hay pacientes en espera")
+            return
+        
+        q = Queue()
+        q.enqueue(self.root)
+
+        while not q.is_empty():
+            nodo = q.dequeue()
+            p = nodo.data
+            print(p)
+
+            if nodo.leftchild:
+                q.enqueue(nodo.leftchild)
+            if nodo.rightchild:
+                q.enqueue(nodo.rightchild)
